@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ model.name }} - URL Detector{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="chat-back-link">
+        <a href="{{ url_for('dashboard') }}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-model-wrapper">
+                <div class="chat-model-image {{ model.type }}-image"></div>
+                {% if model.technique == 'few-shot' %}
+                <span class="model-technique few-shot">Few-Shot Prompting</span>
+                {% else %}
+                <span class="model-technique chain-of-thought">Chain of Thought</span>
+                {% endif %}
+            </div>
+            <div class="chat-model-info">
+                <h2>{{ model.name }}</h2>
+                <p>{{ model.description }}</p>
+            </div>
+        </div>
+        
+        <div class="chat-messages">
+            <div class="message message-bot">
+                Welcome! Enter a URL to analyze using {{ model.name }}. I'll tell you if it's safe or potentially malicious.
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <form id="chat-form" class="chat-input-form" data-model-id="{{ model.id }}">
+                <input type="text" id="chat-input" class="chat-input" placeholder="Enter a URL to analyze..." autofocus>
+                <button type="submit" class="chat-send-btn">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

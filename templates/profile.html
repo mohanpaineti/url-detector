@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - URL Detector{% endblock %}
+
+{% block content %}
+<div class="container profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {{ username[0].upper() }}
+        </div>
+        <h1 class="profile-name">{{ username }}</h1>
+        <p class="profile-email">{{ user_data.email }}</p>
+    </div>
+    
+    <div class="profile-card">
+        <div class="profile-card-header">
+            <h2 class="profile-card-title">
+                <i class="fas fa-user"></i> Account Information
+            </h2>
+        </div>
+        
+        <div class="profile-info">
+            <div class="profile-info-item">
+                <span class="profile-info-label">Username</span>
+                <span>{{ username }}</span>
+            </div>
+            <div class="profile-info-item">
+                <span class="profile-info-label">Email</span>
+                <span>{{ user_data.email }}</span>
+            </div>
+            {% if user_data.created_at %}
+            <div class="profile-info-item">
+                <span class="profile-info-label">Account Created</span>
+                <span>{{ user_data.created_at.strftime('%B %d, %Y') }}</span>
+            </div>
+            {% endif %}
+            <div class="profile-info-item">
+                <span class="profile-info-label">Account Status</span>
+                <span>Active</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="profile-card">
+        <div class="profile-card-header">
+            <h2 class="profile-card-title">
+                <i class="fas fa-shield-alt"></i> Security
+            </h2>
+        </div>
+        
+        <div class="profile-btn-group" style="margin-bottom: 1rem;">
+            <a href="{{ url_for('forgot_password') }}" class="btn btn-outline">
+                <i class="fas fa-key"></i> Change Password
+            </a>
+        </div>
+        
+        <a href="{{ url_for('logout') }}" class="btn btn-logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</div>
+{% endblock %} 

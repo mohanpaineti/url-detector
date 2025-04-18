@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}URL Detector{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Inter font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% if session.username %}
+    <header class="header">
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <i class="fas fa-shield-virus"></i>
+                <span>URLDetector</span>
+            </a>
+            <nav class="nav-links">
+                <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+                {% if session.is_admin %}
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-link admin-link">
+                    <i class="fas fa-user-shield"></i> Admin
+                </a>
+                {% endif %}
+                <a href="{{ url_for('profile') }}" class="btn-profile">
+                    <span>{{ session.username }}</span>
+                    <div class="profile-avatar-small" style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary-light); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                        {{ session.username[0].upper() }}
+                    </div>
+                </a>
+            </nav>
+        </div>
+    </header>
+    {% endif %}
+
+    <main class="main-content">
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

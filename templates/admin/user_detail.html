@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}User Details - {{ user.username }} - Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="admin-back-link">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+        </a>
+    </div>
+    
+    <div class="user-detail-panel">
+        <div class="user-detail-header">
+            <h1>User Details: {{ user.username }}</h1>
+            <div class="user-status">
+                {% if user.is_admin %}
+                <span class="admin-badge">Admin</span>
+                {% else %}
+                <span class="user-badge">User</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="user-detail-content">
+            <div class="user-info-section">
+                <h2>Basic Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">User ID</div>
+                        <div class="info-value">{{ user.id }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Username</div>
+                        <div class="info-value">{{ user.username }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-info-section">
+                <h2>Account Timeline</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Account Created</div>
+                        <div class="info-value">{{ user.created_at_formatted }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Login</div>
+                        <div class="info-value">{{ user.last_login_formatted }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-actions">
+                <form action="{{ url_for('toggle_admin', user_id=user.id) }}" method="POST" class="inline-form">
+                    <button type="submit" class="btn-toggle {% if user.is_admin %}btn-remove{% else %}btn-add{% endif %}" {% if user.id == session.user_id %}disabled{% endif %}>
+                        {% if user.is_admin %}
+                        <i class="fas fa-user-minus"></i> Remove Admin Rights
+                        {% else %}
+                        <i class="fas fa-user-plus"></i> Grant Admin Rights
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

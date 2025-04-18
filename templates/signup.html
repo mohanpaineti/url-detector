@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - URL Detector{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-logo-container">
+        <div class="auth-logo">
+            <i class="fas fa-shield-virus"></i>
+        </div>
+        <h1 class="auth-logo-title">URLDetector</h1>
+    </div>
+    
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">Create an Account</h1>
+            <p class="auth-subtitle">Sign up to access URL detection tools</p>
+        </div>
+        
+        <form action="{{ url_for('signup') }}" method="post">
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-input" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Account Type</label>
+                <div class="role-selector">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="user" checked>
+                        <div class="role-card">
+                            <i class="fas fa-user"></i>
+                            <span>User</span>
+                            <p class="role-description">Regular access to URL detection tools</p>
+                        </div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="admin">
+                        <div class="role-card">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Admin</span>
+                            <p class="role-description">Administrative access to manage users</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-full">
+                <i class="fas fa-user-plus mr-2"></i> Create Account
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            Already have an account? <a href="{{ url_for('login') }}" class="auth-link">Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 
