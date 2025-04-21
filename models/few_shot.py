@@ -6,12 +6,14 @@ import os.path
 import csv
 import re
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 from langchain_deepseek import ChatDeepSeek
-from langchain_huggingface import HuggingFaceEndpoint
 from langchain_groq import ChatGroq
+from langchain.agents import AgentExecutor, create_react_agent
+
+from langchain import hub
+prompt_react = hub.pull("hwchase17/react")
+
 
 # Define paths for datasets
 labeled_data_path = os.path.join(os.path.dirname(__file__), "Labled.csv")
@@ -74,27 +76,28 @@ class DeepSeekFewShot:
             return self._demo_classify(url)
             
         deepseek_llm = ChatDeepSeek(model="deepseek-chat",temperature=0)
-        prompt_template = PromptTemplate(
-        input_variables=["url"],
-        template=f"""
+        query = """
         You are a cybersecurity expert. Classify the URL as 1 (legitimate) or 0 (malicious) based on patterns.
 
         Examples:
         {few_shot_prompt}
 
         Rules:
-        1. Analyze domain structure, suspicious patterns, and URL length.
+        1. Analyze domain structure, suspicious patterns.
         2. Return ONLY 0 or 1 with no explanation.
-        3. Default to 0 if uncertain.
 
-        URL to classify: {{url}}
-        """
+        URL to classify: {url}
+        """.format(url=url,few_shot_prompt=few_shot_prompt)
+        react_agent = create_react_agent(deepseek_llm, prompt=prompt_react, tools = [])
+        react_agent_executor = AgentExecutor(
+        agent=react_agent, handle_parsing_errors=True,tools = []
         )
-        llm_chain = LLMChain(llm=deepseek_llm, prompt=prompt_template)
+
+        
         
         try:
-            response = llm_chain.run(url)
-            output = int(response.strip())                    
+            result = react_agent_executor.invoke({"input":query})
+            output = int(result["output"].strip())                    
                     
             if output == 1:
                 return "safe", 0.88, f"The URL appears to be legitimate based on its structure and characteristics."
@@ -162,27 +165,28 @@ class ChatGPTFewShot:
             return self._demo_classify(url)
             
         openai_llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=self.api_key)
-        prompt_template = PromptTemplate(
-        input_variables=["url"],
-        template=f"""
+        query = """
         You are a cybersecurity expert. Classify the URL as 1 (legitimate) or 0 (malicious) based on patterns.
 
         Examples:
         {few_shot_prompt}
 
         Rules:
-        1. Analyze domain structure, suspicious patterns, and URL length.
+        1. Analyze domain structure, suspicious patterns.
         2. Return ONLY 0 or 1 with no explanation.
-        3. Default to 0 if uncertain.
 
-        URL to classify: {{url}}
-        """
+        URL to classify: {url}
+        """.format(url=url,few_shot_prompt=few_shot_prompt)
+        react_agent = create_react_agent(openai_llm, prompt=prompt_react, tools = [])
+        react_agent_executor = AgentExecutor(
+        agent=react_agent, handle_parsing_errors=True,tools = []
         )
-        llm_chain = LLMChain(llm=openai_llm, prompt=prompt_template)
+
+        
         
         try:
-            response = llm_chain.run(url)
-            output = int(response.strip())                    
+            result = react_agent_executor.invoke({"input":query})
+            output = int(result["output"].strip())                    
                     
             if output == 1:
                 return "safe", 0.88, f"The URL appears to be legitimate based on its structure and characteristics."
@@ -262,27 +266,28 @@ class GeminiFewShot:
         model="gemini-2.0-flash-001",
         temperature=0
         )
-        prompt_template = PromptTemplate(
-        input_variables=["url"],
-        template=f"""
+        query = """
         You are a cybersecurity expert. Classify the URL as 1 (legitimate) or 0 (malicious) based on patterns.
 
         Examples:
         {few_shot_prompt}
 
         Rules:
-        1. Analyze domain structure, suspicious patterns, and URL length.
+        1. Analyze domain structure, suspicious patterns.
         2. Return ONLY 0 or 1 with no explanation.
-        3. Default to 0 if uncertain.
 
-        URL to classify: {{url}}
-        """
+        URL to classify: {url}
+        """.format(url=url,few_shot_prompt=few_shot_prompt)
+        react_agent = create_react_agent(gemini_llm, prompt=prompt_react, tools = [])
+        react_agent_executor = AgentExecutor(
+        agent=react_agent, handle_parsing_errors=True,tools = []
         )
-        llm_chain = LLMChain(llm=gemini_llm, prompt=prompt_template)
+
+        
         
         try:
-            response = llm_chain.run(url)
-            output = int(response.strip())                    
+            result = react_agent_executor.invoke({"input":query})
+            output = int(result["output"].strip())                    
                     
             if output == 1:
                 return "safe", 0.88, f"The URL appears to be legitimate based on its structure and characteristics."
@@ -361,31 +366,25 @@ class LlamaFewShot:
             llama_llm = ChatGroq(temperature=0, groq_api_key=self.api_key, model_name="llama-3.1-8b-instant")
             
             # Create prompt template
-            prompt_template = PromptTemplate(
-                input_variables=["url"],
-                template=f"""
-                You are a cybersecurity expert. Classify the URL as 1 (legitimate) or 0 (malicious) based on patterns.
+            query = """
+            You are a cybersecurity expert. Classify the URL as 1 (legitimate) or 0 (malicious) based on patterns.
 
-                Examples:
-                {few_shot_prompt}
+            Examples:
+            {few_shot_prompt}
 
-                Rules:
-                1. Analyze domain structure, suspicious patterns, and URL length.
-                2. Return ONLY 0 or 1 with no explanation.
-                3. Default to 0 if uncertain.
+            Rules:
+            1. Analyze domain structure, suspicious patterns.
+            2. Return ONLY 0 or 1 with no explanation.
 
-                URL to classify: {{url}}
-                """
+            URL to classify: {url}
+            """.format(url=url,few_shot_prompt=few_shot_prompt)
+            react_agent = create_react_agent(llama_llm, prompt=prompt_react, tools = [])
+            react_agent_executor = AgentExecutor(
+            agent=react_agent, handle_parsing_errors=True,tools = []
             )
-            
-            # Create chain
-            llm_chain = LLMChain(llm=llama_llm, prompt=prompt_template)
-            
-            # Run classification
-            response = llm_chain.run(url)
-            
-            # Process result
-            output = response.strip()
+
+            result = react_agent_executor.invoke({"input":query})
+            output = int(result["output"].strip())
             if "1" in output:
                 return "safe", 0.89, f"The URL appears to be legitimate based on its structure and characteristics."
             elif "0" in output:

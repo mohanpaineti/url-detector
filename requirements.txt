@@ -13,7 +13,5 @@ pandas
 langchain
 langchain-openai
 langchain-deepseek
-langchain-huggingface
 langchain-google-genai
-huggingface_hub
 langchain-groq
