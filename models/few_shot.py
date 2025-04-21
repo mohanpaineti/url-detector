@@ -83,8 +83,10 @@ class DeepSeekFewShot:
         {few_shot_prompt}
 
         Rules:
-        1. Analyze domain structure, suspicious patterns.
-        2. Return ONLY 0 or 1 with no explanation.
+        1. Analyze domain structure and TLD carefully. Be wary of domain spoofing like 'facebook-login.com' or 'youtube.suspicious-domain.com' or 'youtube.in' (instead of youtube.com).
+        2. Country-specific TLDs (like .in, .ru, .cn) that are attached to well-known brands should be treated suspiciously unless the brand is known to operate in that country.
+        3. Check for phishing indicators like IP addresses, excessive subdomains, or suspicious keywords.
+        4. Return ONLY 0 or 1 with no explanation.
 
         URL to classify: {url}
         """.format(url=url,few_shot_prompt=few_shot_prompt)
@@ -172,8 +174,10 @@ class ChatGPTFewShot:
         {few_shot_prompt}
 
         Rules:
-        1. Analyze domain structure, suspicious patterns.
-        2. Return ONLY 0 or 1 with no explanation.
+        1. Analyze domain structure and TLD carefully. Be wary of domain spoofing like 'facebook-login.com' or 'youtube.suspicious-domain.com' or 'youtube.in' (instead of youtube.com).
+        2. Country-specific TLDs (like .in, .ru, .cn) that are attached to well-known brands should be treated suspiciously unless the brand is known to operate in that country.
+        3. Check for phishing indicators like IP addresses, excessive subdomains, or suspicious keywords.
+        4. Return ONLY 0 or 1 with no explanation.
 
         URL to classify: {url}
         """.format(url=url,few_shot_prompt=few_shot_prompt)
@@ -273,8 +277,10 @@ class GeminiFewShot:
         {few_shot_prompt}
 
         Rules:
-        1. Analyze domain structure, suspicious patterns.
-        2. Return ONLY 0 or 1 with no explanation.
+        1. Analyze domain structure and TLD carefully. Be wary of domain spoofing like 'facebook-login.com' or 'youtube.suspicious-domain.com' or 'youtube.in' (instead of youtube.com).
+        2. Country-specific TLDs (like .in, .ru, .cn) that are attached to well-known brands should be treated suspiciously unless the brand is known to operate in that country.
+        3. Check for phishing indicators like IP addresses, excessive subdomains, or suspicious keywords.
+        4. Return ONLY 0 or 1 with no explanation.
 
         URL to classify: {url}
         """.format(url=url,few_shot_prompt=few_shot_prompt)
@@ -373,8 +379,10 @@ class LlamaFewShot:
             {few_shot_prompt}
 
             Rules:
-            1. Analyze domain structure, suspicious patterns.
-            2. Return ONLY 0 or 1 with no explanation.
+            1. Analyze domain structure and TLD carefully. Be wary of domain spoofing like 'facebook-login.com' or 'youtube.suspicious-domain.com' or 'youtube.in' (instead of youtube.com).
+            2. Country-specific TLDs (like .in, .ru, .cn) that are attached to well-known brands should be treated suspiciously unless the brand is known to operate in that country.
+            3. Check for phishing indicators like IP addresses, excessive subdomains, or suspicious keywords.
+            4. Return ONLY 0 or 1 with no explanation.
 
             URL to classify: {url}
             """.format(url=url,few_shot_prompt=few_shot_prompt)

@@ -29,9 +29,11 @@ class DeepSeekChainOfThought:
         Think step by step:
         1. Analyze the domain name, TLD, and overall URL structure
         2. Check for suspicious patterns like random characters, misleading domains, or unusual TLDs
-        3. Consider if the URL tries to imitate a well-known website
-        4. Assess if the URL contains suspicious keywords or patterns
-        5. Provide your reasoning and conclusion
+        3. Be wary of domain spoofing where well-known brands have unusual TLDs (like 'youtube.in' instead of 'youtube.com')
+        4. Country-specific TLDs (like .in, .ru, .cn) with well-known brands should be treated suspiciously
+        5. Consider if the URL tries to imitate a well-known website
+        6. Assess if the URL contains suspicious keywords or patterns
+        7. Provide your reasoning and conclusion
 
         Then classify the URL as 1 (legitimate) or 0 (malicious).
         Start your response with "Analysis:" followed by your reasoning.
@@ -199,9 +201,11 @@ class ChatGPTChainOfThought:
         Think step by step:
         1. Analyze the domain name, TLD, and overall URL structure
         2. Check for suspicious patterns like random characters, misleading domains, or unusual TLDs
-        3. Consider if the URL tries to imitate a well-known website
-        4. Assess if the URL contains suspicious keywords or patterns
-        5. Provide your reasoning and conclusion
+        3. Be wary of domain spoofing where well-known brands have unusual TLDs (like 'youtube.in' instead of 'youtube.com')
+        4. Country-specific TLDs (like .in, .ru, .cn) with well-known brands should be treated suspiciously
+        5. Consider if the URL tries to imitate a well-known website
+        6. Assess if the URL contains suspicious keywords or patterns
+        7. Provide your reasoning and conclusion
 
         Then classify the URL as 1 (legitimate) or 0 (malicious).
         Start your response with "Analysis:" followed by your reasoning.
