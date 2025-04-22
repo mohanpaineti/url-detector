@@ -16,14 +16,7 @@
                 <div class="model-image {{ model.type }}-image"></div>
             </div>
             
-            {% if model.technique == 'few-shot' %}
-            <span class="model-technique few-shot">Few-Shot Prompting</span>
-            {% else %}
-            <span class="model-technique chain-of-thought">Chain of Thought</span>
-            {% endif %}
-            
             <h2 class="model-name">{{ model.name }}</h2>
-            <div class="model-description">{{ model.description }}</div>
             <button class="btn btn-primary btn-full">
                 <i class="fas fa-arrow-right"></i> Select
             </button>

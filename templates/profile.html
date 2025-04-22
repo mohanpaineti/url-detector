@@ -34,10 +34,7 @@
                 <span>{{ user_data.created_at.strftime('%B %d, %Y') }}</span>
             </div>
             {% endif %}
-            <div class="profile-info-item">
-                <span class="profile-info-label">Account Status</span>
-                <span>Active</span>
-            </div>
+            
         </div>
     </div>
     
@@ -49,9 +46,7 @@
         </div>
         
         <div class="profile-btn-group" style="margin-bottom: 1rem;">
-            <a href="{{ url_for('forgot_password') }}" class="btn btn-outline">
-                <i class="fas fa-key"></i> Change Password
-            </a>
+            
         </div>
         
         <a href="{{ url_for('logout') }}" class="btn btn-logout">

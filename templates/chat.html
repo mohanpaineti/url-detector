@@ -14,15 +14,9 @@
         <div class="chat-header">
             <div class="chat-model-wrapper">
                 <div class="chat-model-image {{ model.type }}-image"></div>
-                {% if model.technique == 'few-shot' %}
-                <span class="model-technique few-shot">Few-Shot Prompting</span>
-                {% else %}
-                <span class="model-technique chain-of-thought">Chain of Thought</span>
-                {% endif %}
             </div>
             <div class="chat-model-info">
                 <h2>{{ model.name }}</h2>
-                <p>{{ model.description }}</p>
             </div>
         </div>
         
