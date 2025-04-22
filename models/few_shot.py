@@ -369,7 +369,7 @@ class LlamaFewShot:
         
         try:    
             # Initialize Hugging Face endpoint for Llama model
-            llama_llm = ChatGroq(temperature=0, groq_api_key=self.api_key, model_name="llama-3.1-8b-instant")
+            llama_llm = ChatGroq(temperature=0, groq_api_key=self.api_key, model_name="meta-llama/llama-4-scout-17b-16e-instruct")
             
             # Create prompt template
             query = """
@@ -382,21 +382,24 @@ class LlamaFewShot:
             1. Analyze domain structure and TLD carefully. Be wary of domain spoofing like 'facebook-login.com' or 'youtube.suspicious-domain.com' or 'youtube.in' (instead of youtube.com).
             2. Country-specific TLDs (like .in, .ru, .cn) that are attached to well-known brands should be treated suspiciously unless the brand is known to operate in that country.
             3. Check for phishing indicators like IP addresses, excessive subdomains, or suspicious keywords.
-            4. Return ONLY 0 or 1 with no explanation.
+            4. Use few shot prompt provided to you to classify the URL.
+            5. Return ONLY 0 or 1 with no explanation.
+            6. Don't use any tools.
+            7. In the last Case, Use your own knowledge to classify the URL.
 
             URL to classify: {url}
             """.format(url=url,few_shot_prompt=few_shot_prompt)
             react_agent = create_react_agent(llama_llm, prompt=prompt_react, tools = [])
             react_agent_executor = AgentExecutor(
-            agent=react_agent, handle_parsing_errors=True,tools = []
+            agent=react_agent, handle_parsing_errors=True,tools = [], verbose=True
             )
 
             result = react_agent_executor.invoke({"input":query})
             output = int(result["output"].strip())
-            if "1" in output:
-                return "safe", 0.89, f"The URL appears to be legitimate based on its structure and characteristics."
-            elif "0" in output:
-                return "malicious", 0.91, f"The URL shows signs of being malicious, including suspicious patterns in its structure."
+            if output == 1:
+                return "safe", 0.88, f"The URL appears to be legitimate based on its structure and characteristics."
+            elif output == 0:
+                return "malicious", 0.93, f"The URL shows signs of being malicious, including suspicious patterns in its structure."
             else:
                 return "uncertain", 0.5, f"Could not determine URL safety. Treating as potentially malicious."
                 
