@@ -35,6 +35,7 @@ class DeepSeekChainOfThought:
         6. Assess if the URL contains suspicious keywords or patterns
         7. Provide your reasoning and conclusion
 
+        Provide a detailed analysis explaining why you believe the URL is safe or malicious.
         Then classify the URL as 1 (legitimate) or 0 (malicious).
         Start your response with "Analysis:" followed by your reasoning.
         End with "Classification: [0 or 1]"
@@ -207,6 +208,7 @@ class ChatGPTChainOfThought:
         6. Assess if the URL contains suspicious keywords or patterns
         7. Provide your reasoning and conclusion
 
+        Provide a detailed analysis explaining why you believe the URL is safe or malicious.
         Then classify the URL as 1 (legitimate) or 0 (malicious).
         Start your response with "Analysis:" followed by your reasoning.
         End with "Classification: [0 or 1]"

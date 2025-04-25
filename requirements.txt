@@ -15,3 +15,7 @@ langchain-openai
 langchain-deepseek
 langchain-google-genai
 langchain-groq
+langchain-community
+duckduckgo-search
+pydantic
+markdown

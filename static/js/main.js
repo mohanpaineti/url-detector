@@ -145,57 +145,51 @@ function setupChatInterface() {
         const resultDiv = document.createElement('div');
         resultDiv.classList.add('message-result');
         
-        // Result header with status
-        const resultHeader = document.createElement('div');
-        resultHeader.classList.add('result-header');
+        // Extract conclusion if present
+        let formattedAnalysis = result.details;
+        let conclusionText = null;
         
-        // Title with appropriate icon and color
-        const resultTitle = document.createElement('div');
-        resultTitle.classList.add('result-title', `result-${result.result}`);
+        // Look for conclusion patterns in the analysis
+        const conclusionPattern = /(?:CONCLUSION|FINAL CONCLUSION):\s*This URL is\s*(MALICIOUS|SAFE)/i;
+        const conclusionMatch = formattedAnalysis.match(conclusionPattern);
         
-        let icon = '';
-        if (result.result === 'safe') {
-            icon = '<i class="fas fa-shield-alt"></i>';
-        } else if (result.result === 'malicious') {
-            icon = '<i class="fas fa-exclamation-triangle"></i>';
-        } else {
-            icon = '<i class="fas fa-question-circle"></i>';
+        if (conclusionMatch) {
+            conclusionText = conclusionMatch[0];
+            const safeOrMalicious = conclusionMatch[1].toUpperCase();
+            
+            // Create conclusion element
+            const conclusionElement = document.createElement('div');
+            conclusionElement.classList.add('analysis-conclusion');
+            
+            if (safeOrMalicious === 'SAFE') {
+                conclusionElement.classList.add('conclusion-safe');
+                conclusionElement.innerHTML = `<i class="fas fa-shield-alt"></i> ${conclusionText}`;
+            } else {
+                conclusionElement.classList.add('conclusion-malicious');
+                conclusionElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${conclusionText}`;
+            }
+            
+            resultDiv.appendChild(conclusionElement);
         }
         
-        resultTitle.innerHTML = `${icon} ${result.result.toUpperCase()}`;
+        // Create analysis container
+        const analysisContent = document.createElement('div');
+        analysisContent.classList.add('analysis-content');
         
-        resultHeader.appendChild(resultTitle);
-        
-        // Details
-        const resultDetails = document.createElement('div');
-        resultDetails.classList.add('result-details');
-        resultDetails.textContent = result.details;
-        
-        // Add API key info if result is "uncertain" and contains API key message
-        if (result.result === 'uncertain' && result.details.includes('API key not configured')) {
-            const apiKeyInfo = document.createElement('div');
-            apiKeyInfo.classList.add('api-key-info');
-            apiKeyInfo.innerHTML = `<strong>Note:</strong> This is running in demo mode since no API keys are configured. 
-            To enable full functionality, add your API keys to the .env file.`;
-            apiKeyInfo.style.marginTop = '0.5rem';
-            apiKeyInfo.style.padding = '0.5rem';
-            apiKeyInfo.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
-            apiKeyInfo.style.borderRadius = '4px';
-            resultDetails.appendChild(apiKeyInfo);
-        }
+        // Convert markdown to HTML instead of simple line breaks
+        analysisContent.innerHTML = marked.parse(formattedAnalysis);
         
         // URL display
         const urlDisplay = document.createElement('div');
         urlDisplay.classList.add('result-url');
         urlDisplay.textContent = `Analyzed URL: ${result.url}`;
-        urlDisplay.style.marginTop = '0.5rem';
+        urlDisplay.style.marginTop = '1rem';
         urlDisplay.style.wordBreak = 'break-all';
         urlDisplay.style.fontSize = '0.875rem';
         urlDisplay.style.color = 'var(--text-muted)';
         
         // Put it all together
-        resultDiv.appendChild(resultHeader);
-        resultDiv.appendChild(resultDetails);
+        resultDiv.appendChild(analysisContent);
         resultDiv.appendChild(urlDisplay);
         
         botMessage.appendChild(resultDiv);

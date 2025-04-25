@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import json
 # Import models module to ensure it's loaded
 import models
+import re
 
 # Load environment variables
 load_dotenv()
@@ -50,32 +51,32 @@ models = [
     {
         "id": 1, 
         "name": "DeepSeek", 
-        "description": "Fast URL detection using few-shot prompting technique", 
-        "icon": "bolt",
+        "description": "URL analyzer with comprehensive domain information and security assessment", 
+        "icon": "search",
         "type": "deepseek",
         "technique": "few-shot"
     },
     {
         "id": 4, 
         "name": "ChatGPT", 
-        "description": "Advanced detection using few-shot prompting for complex threats", 
-        "icon": "microscope",
+        "description": "Detailed URL analysis with domain reputation and security insights", 
+        "icon": "magnifying-glass",
         "type": "chatgpt",
         "technique": "few-shot"
     },
     {
         "id": 5, 
         "name": "Gemini", 
-        "description": "High performance detection using Google's Gemini model", 
-        "icon": "star",
+        "description": "Google-powered URL analyzer with deep domain knowledge and security assessment", 
+        "icon": "globe",
         "type": "gemini",
         "technique": "few-shot"
     },
     {
         "id": 6, 
         "name": "Llama", 
-        "description": "Advanced URL detection powered by Meta's Llama model", 
-        "icon": "robot",
+        "description": "Meta's advanced URL analyzer with domain investigation capabilities", 
+        "icon": "search-plus",
         "type": "llama",
         "technique": "few-shot"
     }
@@ -198,62 +199,76 @@ def detect_url():
     if 'user_id' not in session:
         return {'error': 'Unauthorized'}, 401
     
-    data = request.get_json()
-    
-    if not data:
-        return {'error': 'No data provided', 'details': 'Request body is empty or invalid'}, 400
-    
-    url = data.get('url', '').strip()
-    model_id = data.get('model_id')
-    
-    if not url:
-        return {'error': 'Invalid URL', 'details': 'URL cannot be empty'}, 400
-    
-    if not model_id:
-        return {'error': 'Invalid model ID', 'details': 'Model ID must be provided'}, 400
-    
     try:
-        # Convert model_id to integer
-        model_id = int(model_id)
-    except (ValueError, TypeError):
-        return {'error': 'Invalid model ID', 'details': 'Model ID must be a number'}, 400
-    
-    # Get the model configuration based on model ID
-    selected_model = next((model for model in models if model['id'] == model_id), None)
-    
-    if not selected_model:
-        return {'error': 'Invalid model ID', 'details': 'The requested model does not exist'}, 400
-    
-    try:
-        # Import the get_model function for model selection
-        from models import get_model
+        data = request.json
+        url = data.get('url', '')
+        model_id = data.get('model_id')
         
-        # Get the appropriate model based on type and technique
-        model = get_model(selected_model['type'], selected_model['technique'])
+        if not url:
+            return {'error': 'No URL provided', 'details': 'Please enter a URL to analyze'}, 400
+            
+        model = next((m for m in models if m['id'] == model_id), None)
+        if not model:
+            return {'error': 'Invalid model', 'details': 'The selected model does not exist'}, 400
+            
+        # Import and initialize the appropriate model based on selected type
+        if model['type'] == 'chatgpt':
+            from models.few_shot import ChatGPTFewShot
+            detector = ChatGPTFewShot()
+        elif model['type'] == 'deepseek':
+            from models.few_shot import DeepSeekFewShot
+            detector = DeepSeekFewShot()
+        elif model['type'] == 'gemini':
+            from models.few_shot import GeminiFewShot
+            detector = GeminiFewShot()
+        elif model['type'] == 'llama':
+            from models.few_shot import LlamaFewShot
+            detector = LlamaFewShot()
+        else:
+            return {'error': 'Unsupported model', 'details': 'This model is not currently supported'}, 400
+            
+        # Get analysis from the model
+        result_type, confidence, details = detector.classify_url(url)
         
-        # Classify the URL
-        result, confidence, details = model.classify_url(url)
+        # Convert the model output to markdown format for better display
+        import markdown
         
-        # If the result is "error", return a 400 status code
-        if result == "error":
-            return {
-                'error': 'Invalid input',
-                'details': details
-            }, 400
+        # Add markdown formatting to enhance readability
+        formatted_details = details
         
-        # Return successful response
+        # Enhance headings, lists, and key points
+        # Look for patterns like "ANALYSIS:" and make them markdown headings
+        for heading in ["ANALYSIS:", "STRUCTURE ANALYSIS:", "URL COMPONENTS:", "DOMAIN ANALYSIS:", "SECURITY CHECKS:", "CONTENT ANALYSIS:", "CONCLUSION:", "FINAL CONCLUSION:"]:
+            if heading in formatted_details:
+                formatted_details = formatted_details.replace(heading, f"\n## {heading.strip(':')}\n")
+        
+        # Format lists (simple heuristic)
+        lines = formatted_details.split('\n')
+        for i, line in enumerate(lines):
+            # Convert numbered list items
+            if re.match(r'^\d+\.\s', line):
+                lines[i] = line
+            # Convert dash or asterisk bullet points 
+            elif line.strip().startswith('- ') or line.strip().startswith('* '):
+                lines[i] = line
+            # Highlight keywords
+            for keyword in ['malicious', 'suspicious', 'safe', 'legitimate', 'phishing', 'scam']:
+                pattern = re.compile(r'\b' + keyword + r'\b', re.IGNORECASE)
+                lines[i] = pattern.sub(f'**{keyword.upper()}**', lines[i])
+        
+        formatted_details = '\n'.join(lines)
+        
+        # Return results based on analysis
         return {
-            'result': result,
-            'confidence': confidence,
             'url': url,
-            'details': details
+            'model': model['name'],
+            'result': result_type,
+            'details': formatted_details
         }
+            
     except Exception as e:
-        app.logger.error(f"Error during URL detection: {str(e)}")
-        return {
-            'error': 'Processing error',
-            'details': f"An error occurred during processing: {str(e)}"
-        }, 500
+        app.logger.error(f"Error in detect_url: {str(e)}")
+        return {'error': 'Server error', 'details': str(e)}, 500
 
 @app.route('/profile')
 def profile():

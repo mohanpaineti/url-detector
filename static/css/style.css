@@ -591,6 +591,108 @@ a:hover {
   color: var(--text-color);
 }
 
+.analysis-content {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  background-color: rgba(249, 250, 251, 0.8);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  white-space: pre-line;
+  overflow-x: auto;
+}
+
+/* Markdown styling */
+.analysis-content h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3rem;
+}
+
+.analysis-content h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.analysis-content h3,
+.analysis-content h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.analysis-content strong,
+.analysis-content b {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.analysis-content ul, 
+.analysis-content ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.analysis-content li {
+  margin-bottom: 0.3rem;
+}
+
+.analysis-content p {
+  margin-bottom: 1rem;
+}
+
+.analysis-content a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.analysis-content code {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  font-family: monospace;
+  padding: 0.2rem 0.4rem;
+}
+
+.analysis-content pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.analysis-content blockquote {
+  border-left: 4px solid var(--primary-light);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--text-secondary);
+}
+
+.analysis-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.analysis-content table th,
+.analysis-content table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+}
+
+.analysis-content table th {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+}
+
 .chat-input-container {
   padding: 1rem 1.5rem;
   border-top: 1px solid var(--border-color);
@@ -1189,4 +1291,33 @@ a:hover {
 .role-option:hover .role-card {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Add styles for the analysis conclusion */
+.analysis-conclusion {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-md);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.conclusion-safe {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--success-color);
+  border-left: 4px solid var(--success-color);
+}
+
+.conclusion-malicious {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--danger-color);
+  border-left: 4px solid var(--danger-color);
+}
+
+.analysis-conclusion i {
+  font-size: 1.25rem;
 } 
